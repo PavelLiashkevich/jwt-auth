@@ -1,9 +1,9 @@
 const UserModel = require('../models/user-model');
 const bcrypt = require("bcrypt");
-const {uuidV4} = require("mongodb/src/utils");
+const uuid = require('uuid');
 const mailService = require("./mail-service");
 const tokenService = require("./token-service");
-const userDto = require("../dtos/user-dto");
+const UserDto = require("../dtos/user-dto");
 
 class UserService {
     async registration(email, password) {
@@ -12,8 +12,8 @@ class UserService {
             throw new Error(`Пользователь с почтовым адресом ${email} уже существует`)
         }
 
-        const hashPassword = bcrypt.hash(password, 3);
-        const activationLink = uuidV4()
+        const hashPassword = await bcrypt.hash(password, 3);
+        const activationLink = uuid.v4()
 
         const user = await UserModel.create({email, password: hashPassword, activationLink})
 
